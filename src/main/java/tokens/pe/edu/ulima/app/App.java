@@ -3,6 +3,7 @@ import static spark.Spark.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -66,6 +67,85 @@ public class App
 	        	rpta.addProperty("tipo_mensaje ", "error");
 	        	rpta.addProperty("mensaje", (String) e.getMessage() );
 
+	        	return rpta.toString();
+    	     }
+    	});
+    	
+    	get("/get_token", (request, response) -> {
+    		String usuario = request.queryParams("usuario");
+    		
+    		if (usuario == null){
+    			JsonObject rpta = new JsonObject();
+	        	rpta.addProperty("tipo_mensaje ", "error");
+	        	rpta.addProperty("mensaje", "El usuario no puede ser nulo" );
+
+	        	return rpta.toString();
+    		}
+    		
+    		try{
+    	        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+    	        MongoDatabase db_tokens = mongoClient.getDatabase("db_tokens");
+    	        MongoCollection<Document> tokensCollection = db_tokens.getCollection("tokens");    
+    	        Bson bson = Filters.eq("usuario", usuario);
+    	        List<Document> list = tokensCollection.find(bson).into(new ArrayList<>());
+    	        
+    	        if (list.size() == 0){
+    	        	//rpta = { :tipo_mensaje => 'success', :mensaje => [doc['token']] }.to_json
+    	        	Document doc = list.get(0);
+    	        	JsonObject rpta = new JsonObject();
+    	        	rpta.addProperty("tipo_mensaje ", "warning");
+    	        	rpta.addProperty("mensaje", "Usuario no cuenta con token");
+    	        	
+    	        	mongoClient.close();
+    	        	return rpta.toString();
+    	        }else{
+    	        	Document doc = list.get(0);
+    	        	JsonObject rpta = new JsonObject();
+    	        	rpta.addProperty("tipo_mensaje ", "success");
+    	        	rpta.addProperty("mensaje", doc.getString("token"));
+    	        	
+    	        	mongoClient.close();
+    	        	return rpta.toString();
+    	        }
+    	     }catch(Exception e){
+    	    	 //{ :tipo_mensaje => 'error', :mensaje => ['Se ha producido un error al generar el token al usuario', e] }.to_json
+    	        JsonObject rpta = new JsonObject();
+	        	rpta.addProperty("tipo_mensaje ", "error");
+	        	rpta.addProperty("mensaje", (String) e.getMessage() );
+	        	
+	        	return rpta.toString();
+    	     }
+    	});
+    	
+    	get("/borrar", (request, response) -> {
+    		String usuario = request.queryParams("usuario");
+    		
+    		if (usuario == null){
+    			JsonObject rpta = new JsonObject();
+	        	rpta.addProperty("tipo_mensaje ", "error");
+	        	rpta.addProperty("mensaje", "El usuario no puede ser nulo" );
+
+	        	return rpta.toString();
+    		}
+    		
+    		try{
+    	        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+    	        MongoDatabase db_tokens = mongoClient.getDatabase("db_tokens");
+    	        MongoCollection<Document> tokensCollection = db_tokens.getCollection("tokens");    
+    	        Bson bson = Filters.eq("usuario", usuario);
+    	        tokensCollection.deleteOne(bson);
+    	        JsonObject rpta = new JsonObject();
+	        	rpta.addProperty("tipo_mensaje ", "success");
+	        	rpta.addProperty("mensaje", "Token eliminado");
+	        	mongoClient.close();
+	        	
+	        	return rpta.toString();
+    	     }catch(Exception e){
+    	    	 //{ :tipo_mensaje => 'error', :mensaje => ['Se ha producido un error al generar el token al usuario', e] }.to_json
+    	        JsonObject rpta = new JsonObject();
+	        	rpta.addProperty("tipo_mensaje ", "error");
+	        	rpta.addProperty("mensaje", (String) e.getMessage() );
+	        	
 	        	return rpta.toString();
     	     }
     	});
