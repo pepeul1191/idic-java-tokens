@@ -3,8 +3,6 @@ import static spark.Spark.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.google.gson.JsonArray;
