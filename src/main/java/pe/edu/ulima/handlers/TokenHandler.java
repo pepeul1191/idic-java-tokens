@@ -13,6 +13,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+
+import pe.edu.ulima.models.Tokens;
+
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
@@ -29,11 +32,8 @@ public class TokenHandler {
 		}
 		
 		try{
-	        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-	        MongoDatabase db_tokens = mongoClient.getDatabase("db_tokens");
-	        MongoCollection<Document> tokensCollection = db_tokens.getCollection("tokens");    
-	        Bson bson = Filters.eq("usuario", usuario);
-	        List<Document> list = tokensCollection.find(bson).into(new ArrayList<>());
+	        Tokens tokens = new Tokens();
+	        List<Document> list = tokens.buscarUsuario(usuario);
 	        
 	        if (list.size() == 1){
 	        	//rpta = { :tipo_mensaje => 'success', :mensaje => [doc['token']] }.to_json
@@ -47,7 +47,9 @@ public class TokenHandler {
 	        	SecureRandom random = new SecureRandom();
 	        	String token = new BigInteger(130, random).toString(32);
 	        	Document doc = new Document("usuario", usuario).append("token", token);
-	        	tokensCollection.insertOne(doc);
+	        	Tokens tokensInsertar = new Tokens();
+	        	tokensInsertar.insertar(doc);
+	        	
 	        	//{ :tipo_mensaje => 'success', :mensaje => ['token', token] }.to_json
 	        	JsonObject rpta = new JsonObject();
 	        	rpta.addProperty("tipo_mensaje ", "success");
