@@ -79,11 +79,8 @@ public class TokenHandler {
 		}
 		
 		try{
-	        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-	        MongoDatabase db_tokens = mongoClient.getDatabase("db_tokens");
-	        MongoCollection<Document> tokensCollection = db_tokens.getCollection("tokens");    
-	        Bson bson = Filters.eq("usuario", usuario);
-	        List<Document> list = tokensCollection.find(bson).into(new ArrayList<>());
+			Tokens tokens = new Tokens();
+	        List<Document> list = tokens.buscarUsuario(usuario);
 	        
 	        if (list.size() == 0){
 	        	//rpta = { :tipo_mensaje => 'success', :mensaje => [doc['token']] }.to_json
@@ -92,7 +89,6 @@ public class TokenHandler {
 	        	rpta.addProperty("tipo_mensaje ", "warning");
 	        	rpta.addProperty("mensaje", "Usuario no cuenta con token");
 	        	
-	        	mongoClient.close();
 	        	return rpta.toString();
 	        }else{
 	        	Document doc = list.get(0);
@@ -100,7 +96,6 @@ public class TokenHandler {
 	        	rpta.addProperty("tipo_mensaje ", "success");
 	        	rpta.addProperty("mensaje", doc.getString("token"));
 	        	
-	        	mongoClient.close();
 	        	return rpta.toString();
 	        }
 	     }catch(Exception e){
