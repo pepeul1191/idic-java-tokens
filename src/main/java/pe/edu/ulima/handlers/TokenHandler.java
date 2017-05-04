@@ -3,16 +3,9 @@ package pe.edu.ulima.handlers;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 
 import pe.edu.ulima.models.Tokens;
 
@@ -120,15 +113,12 @@ public class TokenHandler {
 		}
 		
 		try{
-	        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-	        MongoDatabase db_tokens = mongoClient.getDatabase("db_tokens");
-	        MongoCollection<Document> tokensCollection = db_tokens.getCollection("tokens");    
-	        Bson bson = Filters.eq("usuario", usuario);
-	        tokensCollection.deleteOne(bson);
+			Tokens tokens = new Tokens();
+	        tokens.eliminar(usuario);
+	        
 	        JsonObject rpta = new JsonObject();
         	rpta.addProperty("tipo_mensaje ", "success");
         	rpta.addProperty("mensaje", "Token eliminado");
-        	mongoClient.close();
         	
         	return rpta.toString();
 	     }catch(Exception e){

@@ -37,4 +37,12 @@ public class Tokens {
 		tokensCollection.insertOne(doc);
 		this.c.getMongoClient().close();
 	}
+	
+	public void eliminar(String usuario){		
+		MongoCollection<Document> tokensCollection = this.db.getCollection("tokens");    
+		Bson bson = Filters.eq("usuario", usuario);
+        tokensCollection.deleteOne(bson);
+        
+       this.c.getMongoClient().close();
+	}
 }
