@@ -7,9 +7,7 @@ public class ConnectionDB {
 	private MongoDatabase c;
 	private MongoClient mongoClient;
     
-    public ConnectionDB(){
-    	MongoDatabase c;
-        
+    public ConnectionDB(){        
         try {
         	mongoClient = new MongoClient( "localhost" , 27017 );
         	this.c = mongoClient.getDatabase("db_tokens");
