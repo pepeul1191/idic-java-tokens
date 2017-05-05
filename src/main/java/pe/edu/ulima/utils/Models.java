@@ -1,8 +1,5 @@
 package pe.edu.ulima.utils;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
-
 import com.udpwork.ssdb.SSDB;
 
 public class Models {
