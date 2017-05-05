@@ -33,11 +33,6 @@
    	</dependency>
    	<!--DB - Inicio-->
 	<dependency>
-		<groupId>org.mongodb</groupId>
-		<artifactId>mongo-java-driver</artifactId>
-		<version>3.4.2</version>
-	</dependency>	
-	<dependency>
 	    <groupId>org.nutz</groupId>
 	    <artifactId>ssdb4j</artifactId>
 	    <version>8.3</version>

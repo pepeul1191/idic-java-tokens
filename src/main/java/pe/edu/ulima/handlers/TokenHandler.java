@@ -3,12 +3,8 @@ package pe.edu.ulima.handlers;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import java.util.List;
-import org.bson.Document;
 import com.google.gson.JsonObject;
-
 import pe.edu.ulima.models.Tokens;
-
 import java.security.SecureRandom;
 import java.math.BigInteger;
 
