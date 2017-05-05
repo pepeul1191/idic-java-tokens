@@ -1,27 +1,20 @@
 package pe.edu.ulima.utils;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import com.udpwork.ssdb.SSDB;
 
 public class ConnectionDB {
-	private MongoDatabase c;
-	private MongoClient mongoClient;
+	private SSDB ssdbClient;
     
     public ConnectionDB(){        
         try {
-        	mongoClient = new MongoClient( "localhost" , 27017 );
-        	this.c = mongoClient.getDatabase("db_tokens");
+        	this.ssdbClient = new SSDB("127.0.0.1", 8888);
         } catch ( Exception e ) {
           System.err.println( e.getClass().getName() + ": " + e.getMessage() );
           System.exit(0);
         }
     }
 
-    public MongoDatabase getConnection() {
-        return (MongoDatabase) c;
-    }
-
-	public MongoClient getMongoClient() {
-		return mongoClient;
+	public SSDB getClient() {
+		return ssdbClient;
 	}
 }

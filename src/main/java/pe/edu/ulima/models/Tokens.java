@@ -15,27 +15,36 @@ import pe.edu.ulima.utils.ConnectionDB;
 import pe.edu.ulima.utils.Models;
 
 public class Tokens extends Models{
-	public List<Document> buscarUsuario(String usuario){		
-		MongoCollection<Document> tokensCollection = this.db.getCollection("tokens");    
-        Bson bson = Filters.eq("usuario", usuario);
-        List<Document> rpta =  tokensCollection.find(bson).into(new ArrayList<>());
-        
-       this.c.getMongoClient().close();
-        
-        return rpta;
+	public String buscarUsuario(String usuario){		 
+        String rpta = null;
+		try {
+			byte[] temp = this.db.get(usuario);
+			if(temp != null){
+	             rpta = new String(temp);
+	         }else{
+	             rpta = "nulo";
+	         }
+		} catch (Exception e) {
+			e.printStackTrace();
+			rpta = (String) e.getMessage();
+		}
+		
+		return rpta;
 	}
 	
-	public void insertar(Document doc){
-		MongoCollection<Document> tokensCollection = this.db.getCollection("tokens");
-		tokensCollection.insertOne(doc);
-		this.c.getMongoClient().close();
+	public void insertar(String usuario, String token){
+		try {
+			this.db.set(usuario, token);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void eliminar(String usuario){		
-		MongoCollection<Document> tokensCollection = this.db.getCollection("tokens");    
-		Bson bson = Filters.eq("usuario", usuario);
-        tokensCollection.deleteOne(bson);
-        
-       this.c.getMongoClient().close();
+		try {
+			this.db.del(usuario);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

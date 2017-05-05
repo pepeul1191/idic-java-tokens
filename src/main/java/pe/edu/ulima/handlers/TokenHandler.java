@@ -26,23 +26,21 @@ public class TokenHandler {
 		
 		try{
 	        Tokens tokens = new Tokens();
-	        List<Document> list = tokens.buscarUsuario(usuario);
+	        String list = tokens.buscarUsuario(usuario);
 	        
-	        if (list.size() == 1){
+	        if (!list.equalsIgnoreCase("nulo")){
 	        	//rpta = { :tipo_mensaje => 'success', :mensaje => [doc['token']] }.to_json
-	        	Document doc = list.get(0);
 	        	JsonObject rpta = new JsonObject();
 	        	rpta.addProperty("tipo_mensaje ", "success");
-	        	rpta.addProperty("mensaje", (String) doc.get("token"));
+	        	rpta.addProperty("mensaje", list);
 	        	
 	        	return rpta.toString();
 	        }else{
 	        	SecureRandom random = new SecureRandom();
 	        	String token = new BigInteger(130, random).toString(32);
-	        	Document doc = new Document("usuario", usuario).append("token", token);
 	        	Tokens tokensInsertar = new Tokens();
-	        	tokensInsertar.insertar(doc);
-	        	
+	        	tokensInsertar.insertar(usuario, token);
+
 	        	//{ :tipo_mensaje => 'success', :mensaje => ['token', token] }.to_json
 	        	JsonObject rpta = new JsonObject();
 	        	rpta.addProperty("tipo_mensaje ", "success");
@@ -73,22 +71,20 @@ public class TokenHandler {
 		
 		try{
 			Tokens tokens = new Tokens();
-	        List<Document> list = tokens.buscarUsuario(usuario);
+	        String list = tokens.buscarUsuario(usuario);
 	        
-	        if (list.size() == 0){
+	        if (!list.equalsIgnoreCase("nulo")){
 	        	//rpta = { :tipo_mensaje => 'success', :mensaje => [doc['token']] }.to_json
-	        	Document doc = list.get(0);
 	        	JsonObject rpta = new JsonObject();
 	        	rpta.addProperty("tipo_mensaje ", "warning");
 	        	rpta.addProperty("mensaje", "Usuario no cuenta con token");
 	        	
 	        	return rpta.toString();
 	        }else{
-	        	Document doc = list.get(0);
 	        	JsonObject rpta = new JsonObject();
 	        	rpta.addProperty("tipo_mensaje ", "success");
-	        	rpta.addProperty("mensaje", doc.getString("token"));
-	        	
+	        	rpta.addProperty("mensaje", list);
+
 	        	return rpta.toString();
 	        }
 	     }catch(Exception e){
